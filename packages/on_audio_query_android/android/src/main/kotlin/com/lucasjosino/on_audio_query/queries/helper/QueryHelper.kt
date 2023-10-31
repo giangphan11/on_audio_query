@@ -47,8 +47,10 @@ class QueryHelper {
             "bookmark",
             "date_added",
             "date_modified",
+            "bitrate",
             "duration",
             "track" -> cursor.getInt(cursor.getColumnIndex(itemProperty))
+            "disc_number" -> cursor.getInt(cursor.getColumnIndex(itemProperty))
             // Boolean
             "is_alarm",
             "is_audiobook",

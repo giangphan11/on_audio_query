@@ -26,6 +26,8 @@ fun songProjection(): Array<String> {
         MediaStore.Audio.Media.DURATION,
         MediaStore.Audio.Media.TITLE,
         MediaStore.Audio.Media.TRACK,
+        MediaStore.Audio.Media.DISC_NUMBER,
+        MediaStore.Audio.Media.BITRATE,
         MediaStore.Audio.Media.YEAR,
         MediaStore.Audio.Media.IS_ALARM,
         MediaStore.Audio.Media.IS_MUSIC,
