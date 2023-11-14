@@ -36,21 +36,36 @@ class QueryHelper {
             "_id",
             "album_id",
             "artist_id" -> {
-                // The [id] from Android >= 30/R is a [Long] instead of [Int].
-                if (Build.VERSION.SDK_INT >= 30) {
-                    cursor.getLong(cursor.getColumnIndex(itemProperty))
-                } else {
-                    cursor.getInt(cursor.getColumnIndex(itemProperty))
+                try {
+                    // The [id] from Android >= 30/R is a [Long] instead of [Int].
+                    if (Build.VERSION.SDK_INT >= 30) {
+                        return cursor.getLong(cursor.getColumnIndex(itemProperty))
+                    } else {
+                        return cursor.getInt(cursor.getColumnIndex(itemProperty))
+                    }
+                } catch (ignore: Exception) {
                 }
             }
+
             "_size",
             "bookmark",
             "date_added",
             "date_modified",
             "bitrate",
             "duration",
-            "track" -> cursor.getInt(cursor.getColumnIndex(itemProperty))
-            "disc_number" -> cursor.getInt(cursor.getColumnIndex(itemProperty))
+            "track" -> {
+                try {
+                    return cursor.getInt(cursor.getColumnIndex(itemProperty))
+                } catch (ignore: Exception) {
+                }
+            }
+
+            "disc_number" -> {
+                try {
+                    return cursor.getInt(cursor.getColumnIndex(itemProperty))
+                } catch (ignore: Exception) {
+                }
+            }
             // Boolean
             "is_alarm",
             "is_audiobook",
@@ -58,12 +73,20 @@ class QueryHelper {
             "is_notification",
             "is_podcast",
             "is_ringtone" -> {
-                val value = cursor.getString(cursor.getColumnIndex(itemProperty))
-                if (value == "0") return false
-                return true
+                try {
+                    val value = cursor.getString(cursor.getColumnIndex(itemProperty))
+                    if (value == "0") return false
+                    return true
+                } catch (ignore: Exception) {
+                }
             }
             // String
-            else -> cursor.getString(cursor.getColumnIndex(itemProperty))
+            else -> {
+                try {
+                    return cursor.getString(cursor.getColumnIndex(itemProperty))
+                } catch (ignore: Exception) {
+                }
+            }
         }
     }
 
@@ -79,6 +102,7 @@ class QueryHelper {
                     cursor.getInt(cursor.getColumnIndex(itemProperty))
                 }
             }
+
             "numsongs" -> cursor.getInt(cursor.getColumnIndex(itemProperty))
             else -> cursor.getString(cursor.getColumnIndex(itemProperty))
         }
@@ -90,6 +114,7 @@ class QueryHelper {
             "_id",
             "date_added",
             "date_modified" -> cursor.getLong(cursor.getColumnIndex(itemProperty))
+
             else -> cursor.getString(cursor.getColumnIndex(itemProperty))
         }
     }
@@ -105,8 +130,10 @@ class QueryHelper {
                     cursor.getInt(cursor.getColumnIndex(itemProperty))
                 }
             }
+
             "number_of_albums",
             "number_of_tracks" -> cursor.getInt(cursor.getColumnIndex(itemProperty))
+
             else -> cursor.getString(cursor.getColumnIndex(itemProperty))
         }
     }
@@ -122,6 +149,7 @@ class QueryHelper {
                     cursor.getInt(cursor.getColumnIndex(itemProperty))
                 }
             }
+
             else -> cursor.getString(cursor.getColumnIndex(itemProperty))
         }
     }
@@ -176,6 +204,7 @@ class QueryHelper {
                         null
                     )
                 }
+
                 (type == 4 && selection == null) -> {
                     cursor = resolver.query(
                         MediaStore.Audio.Genres.Members.getContentUri("external", id.toLong()),
@@ -188,6 +217,7 @@ class QueryHelper {
                         null
                     )
                 }
+
                 else -> {
                     cursor = resolver.query(
                         MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
@@ -231,6 +261,7 @@ class QueryHelper {
                 itemProperty,
                 cursor
             )
+
             MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI -> loadArtistItem(itemProperty, cursor)
             MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI -> loadGenreItem(itemProperty, cursor)
             else -> null
