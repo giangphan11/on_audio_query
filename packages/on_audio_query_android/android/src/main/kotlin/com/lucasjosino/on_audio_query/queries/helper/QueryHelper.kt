@@ -233,8 +233,7 @@ class QueryHelper {
         }
 
         //
-        if (cursor != null) {
-            cursor.moveToFirst()
+        if (cursor != null && cursor.moveToFirst()) {
             // Try / Catch to avoid problems. Everytime someone request the first song from a playlist and
             // this playlist is empty will crash the app, so we just 'print' the error.
             try {

@@ -29,9 +29,7 @@ class AudioQuery : ViewModel() {
     private lateinit var sortType: String
     private lateinit var resolver: ContentResolver
 
-    /**
-     * Method to "query" all songs.
-     */
+    /** Method to "query" all songs. */
     fun querySongs() {
         val call = PluginProvider.call()
         val result = PluginProvider.result()
@@ -68,7 +66,7 @@ class AudioQuery : ViewModel() {
         }
     }
 
-    //Loading in Background
+    // Loading in Background
     private suspend fun loadSongs(): ArrayList<MutableMap<String, Any?>> =
         withContext(Dispatchers.IO) {
             val songList: ArrayList<MutableMap<String, Any?>> = ArrayList()
@@ -88,7 +86,7 @@ class AudioQuery : ViewModel() {
                         tempData[audioMedia] = helper.loadSongItem(audioMedia, cursor)
                     }
 
-                    //Get a extra information from audio, e.g: extension, uri, etc..
+                    // Get a extra information from audio, e.g: extension, uri, etc..
                     val tempExtraData = helper.loadSongExtraInfo(uri, tempData)
                     tempData.putAll(tempExtraData)
 
@@ -101,6 +99,5 @@ class AudioQuery : ViewModel() {
             }
 
             return@withContext songList
-
         }
 }
