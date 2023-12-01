@@ -37,11 +37,12 @@ class AudioQuery : ViewModel() {
         this.resolver = context.contentResolver
 
         // Sort: Type and Order.
-        sortType = checkSongSortType(
-            call.argument<Int>("sortType"),
-            call.argument<Int>("orderType")!!,
-            call.argument<Boolean>("ignoreCase")!!
-        )
+        sortType =
+                checkSongSortType(
+                        call.argument<Int>("sortType"),
+                        call.argument<Int>("orderType")!!,
+                        call.argument<Boolean>("ignoreCase")!!
+                )
 
         // Check uri:
         //   * 0 -> External.
@@ -68,36 +69,38 @@ class AudioQuery : ViewModel() {
 
     // Loading in Background
     private suspend fun loadSongs(): ArrayList<MutableMap<String, Any?>> =
-        withContext(Dispatchers.IO) {
-            val songList: ArrayList<MutableMap<String, Any?>> = ArrayList()
+            withContext(Dispatchers.IO) {
+                val songList: ArrayList<MutableMap<String, Any?>> = ArrayList()
 
-            try {
-                // Setup the cursor with 'uri', 'projection' and 'sortType'.
-                val cursor = resolver.query(uri, songProjection(), selection, null, sortType)
+                try {
+                    // Setup the cursor with 'uri', 'projection' and 'sortType'.
+                    val cursor = resolver.query(uri, songProjection(), selection, null, sortType)
 
-                Log.d(TAG, "Cursor count: ${cursor?.count}")
+                    Log.d(TAG, "Cursor count: ${cursor?.count}")
 
-                // For each item(song) inside this "cursor", take one and "format"
-                // into a 'Map<String, dynamic>'.
-                while (cursor != null && cursor.moveToNext()) {
-                    val tempData: MutableMap<String, Any?> = HashMap()
+                    // For each item(song) inside this "cursor", take one and "format"
+                    // into a 'Map<String, dynamic>'.
+                    while (cursor != null && cursor.moveToNext()) {
+                        val tempData: MutableMap<String, Any?> = HashMap()
+                        try {
+                            for (audioMedia in cursor.columnNames) {
+                                tempData[audioMedia] = helper.loadSongItem(audioMedia, cursor)
+                            }
 
-                    for (audioMedia in cursor.columnNames) {
-                        tempData[audioMedia] = helper.loadSongItem(audioMedia, cursor)
+                            // Get a extra information from audio, e.g: extension, uri, etc..
+                            val tempExtraData = helper.loadSongExtraInfo(uri, tempData)
+                            tempData.putAll(tempExtraData)
+
+                            songList.add(tempData)
+                        } catch (ignore: Exception) {
+                            continue
+                        }
                     }
 
-                    // Get a extra information from audio, e.g: extension, uri, etc..
-                    val tempExtraData = helper.loadSongExtraInfo(uri, tempData)
-                    tempData.putAll(tempExtraData)
+                    // Close cursor to avoid memory leaks.
+                    cursor?.close()
+                } catch (ignore: Exception) {}
 
-                    songList.add(tempData)
-                }
-
-                // Close cursor to avoid memory leaks.
-                cursor?.close()
-            } catch (ignore: Exception) {
+                return@withContext songList
             }
-
-            return@withContext songList
-        }
 }

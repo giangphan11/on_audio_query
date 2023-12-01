@@ -53,6 +53,7 @@ class QueryHelper {
             "date_modified",
             "bitrate",
             "duration",
+            "disc_number",
             "track" -> {
                 try {
                     return cursor.getInt(cursor.getColumnIndexOrThrow(itemProperty))
@@ -60,12 +61,6 @@ class QueryHelper {
                 }
             }
 
-            "disc_number" -> {
-                try {
-                    return cursor.getInt(cursor.getColumnIndexOrThrow(itemProperty))
-                } catch (ignore: Exception) {
-                }
-            }
             // Boolean
             "is_alarm",
             "is_audiobook",
