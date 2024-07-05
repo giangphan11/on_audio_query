@@ -6,22 +6,22 @@ class SongModel {
   final Map<dynamic, dynamic> _info;
 
   /// Return song [id]
-  int get id => _info["_id"];
+  int get id => _info["_id"] ?? 0;
 
   /// Return song [data]
-  String get data => _info["_data"];
+  String get data => _info["_data"] ?? '';
 
   /// Return song [uri]
   String? get uri => _info["_uri"];
 
   /// Return song [displayName]
-  String get displayName => _info["_display_name"];
+  String get displayName => _info["_display_name"] ?? '';
 
   /// Return song [displayName] without Extension
-  String get displayNameWOExt => _info["_display_name_wo_ext"];
+  String get displayNameWOExt => _info["_display_name_wo_ext"] ?? '';
 
   /// Return song [size]
-  int get size => _info["_size"];
+  int get size => _info["_size"] ?? 0;
 
   /// Return song [album]
   String? get album => _info["album"];
@@ -63,7 +63,7 @@ class SongModel {
   int? get duration => _info["duration"];
 
   /// Return song [title]
-  String get title => _info["title"];
+  String get title => _info["title"] ?? '';
 
   /// Return song [track]
   int? get track => _info["track"];
@@ -72,7 +72,7 @@ class SongModel {
   // String get uri;
 
   /// Return song only the [fileExtension]
-  String get fileExtension => _info["file_extension"];
+  String get fileExtension => _info["file_extension"] ?? '';
 
   // Bool methods
 
